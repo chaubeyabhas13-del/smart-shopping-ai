@@ -1,72 +1,62 @@
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# 🎨 FIXED PREMIUM UI (VISIBLE + CLEAN)
+# 🎨 PREMIUM UI (FIXED VISIBILITY)
 st.markdown("""
 <style>
-
-/* MAIN BACKGROUND */
 .stApp {
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: #ffffff;
 }
 
-/* SIDEBAR */
+/* Sidebar */
 section[data-testid="stSidebar"] {
     background: #0b0b0b;
     color: white;
 }
 
-/* INPUT BOXES */
+/* Inputs */
 input, textarea {
     background-color: #ffffff !important;
     color: #000000 !important;
     border-radius: 8px !important;
 }
 
-/* NUMBER INPUT */
 div[data-baseweb="input"] {
     background-color: white !important;
     color: black !important;
 }
 
-/* LABELS */
+/* Labels */
 label {
     color: #ffffff !important;
     font-weight: 500;
 }
 
-/* SLIDER */
-.stSlider label {
-    color: white !important;
-}
-
-/* CARDS */
+/* Cards */
 .card {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
     margin-bottom: 20px;
 }
 
-/* PRODUCT CARD */
+/* Product Cards */
 .product-card {
     background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(12px);
     padding: 15px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
     transition: 0.3s;
 }
 .product-card:hover {
     transform: scale(1.05);
 }
 
-/* BUTTON */
+/* Button */
 .stButton>button {
     background: linear-gradient(45deg, #ff6a00, #ee0979);
     color: white;
@@ -76,16 +66,10 @@ label {
     border: none;
 }
 
-/* HEADINGS */
+/* Headings */
 h1, h2, h3 {
-    color: #ffffff !important;
+    color: white !important;
 }
-
-/* TEXT */
-p {
-    color: #e0e0e0;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -95,7 +79,6 @@ st.title("OptiCart Pro – Smart Shopping Optimization System")
 # 📊 SIDEBAR
 st.sidebar.header("Budget Settings")
 budget = st.sidebar.number_input("Enter Budget ₹", min_value=1)
-
 num_products = st.sidebar.slider("Number of Products", 1, 10, 3)
 
 # 🛒 CART
@@ -103,7 +86,9 @@ if "cart" not in st.session_state:
     st.session_state.cart = []
 
 # 🧭 TABS
-tab1, tab2, tab3 = st.tabs(["Product Entry", "Shopping View", "Cart"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Product Entry", "Shopping View", "Cart", "Smart Analysis"]
+)
 
 products = []
 
@@ -128,7 +113,6 @@ with tab1:
             image = st.text_input("Image URL", key=f"img{i}")
 
         final_price = price - (price * discount / 100)
-
         st.write(f"Final Price: ₹ {round(final_price,2)}")
 
         st.markdown("</div>", unsafe_allow_html=True)
@@ -196,6 +180,44 @@ with tab3:
             st.error("Over Budget! Reduce items.")
         else:
             st.success("Within Budget ✅")
+
+# ------------------ TAB 4 ------------------
+with tab4:
+    st.subheader("Smart Recommendation System")
+
+    valid_products = [p for p in products if p["name"] and p["price"] > 0]
+
+    if len(valid_products) == 0:
+        st.warning("Enter product details first")
+    else:
+        for p in valid_products:
+            p["score"] = p["value"] / p["price"] if p["price"] > 0 else 0
+
+        # 🏆 Best Product
+        best = max(valid_products, key=lambda x: x["score"])
+        st.success(f"Best Value Product: {best['name']}")
+
+        # 💰 Budget Optimization
+        sorted_products = sorted(valid_products, key=lambda x: x["score"], reverse=True)
+
+        selected = []
+        total = 0
+
+        for p in sorted_products:
+            if total + p["price"] <= budget:
+                selected.append(p)
+                total += p["price"]
+
+        st.write("### Recommended Products Under Budget")
+
+        for p in selected:
+            st.write(f"{p['name']} - ₹{round(p['price'],2)}")
+
+        st.write(f"Total: ₹{round(total,2)}")
+
+        # 📊 Table
+        df = pd.DataFrame(valid_products)
+        st.dataframe(df[["name", "price", "value", "score"]])
 
 # FOOTER
 st.markdown("---")
