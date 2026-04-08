@@ -2,21 +2,47 @@ import streamlit as st
 
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# 🎨 PREMIUM UI
+# 🎨 FIXED PREMIUM UI (VISIBLE + CLEAN)
 st.markdown("""
 <style>
+
+/* MAIN BACKGROUND */
 .stApp {
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: white;
+    color: #ffffff;
 }
 
-/* Sidebar */
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
-    background: #111;
+    background: #0b0b0b;
     color: white;
 }
 
-/* Cards */
+/* INPUT BOXES */
+input, textarea {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 8px !important;
+}
+
+/* NUMBER INPUT */
+div[data-baseweb="input"] {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* LABELS */
+label {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* SLIDER */
+.stSlider label {
+    color: white !important;
+}
+
+/* CARDS */
 .card {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
@@ -26,9 +52,9 @@ section[data-testid="stSidebar"] {
     margin-bottom: 20px;
 }
 
-/* Product cards */
+/* PRODUCT CARD */
 .product-card {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.12);
     backdrop-filter: blur(12px);
     padding: 15px;
     border-radius: 12px;
@@ -40,19 +66,26 @@ section[data-testid="stSidebar"] {
     transform: scale(1.05);
 }
 
-/* Buttons */
+/* BUTTON */
 .stButton>button {
     background: linear-gradient(45deg, #ff6a00, #ee0979);
     color: white;
     border-radius: 10px;
     height: 45px;
+    font-weight: bold;
     border: none;
 }
 
-/* Inputs */
-input, textarea {
-    color: black !important;
+/* HEADINGS */
+h1, h2, h3 {
+    color: #ffffff !important;
 }
+
+/* TEXT */
+p {
+    color: #e0e0e0;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -65,7 +98,7 @@ budget = st.sidebar.number_input("Enter Budget ₹", min_value=1)
 
 num_products = st.sidebar.slider("Number of Products", 1, 10, 3)
 
-# 🛒 CART STORAGE
+# 🛒 CART
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
@@ -159,7 +192,6 @@ with tab3:
         st.markdown("---")
         st.subheader(f"Total: ₹ {round(total,2)}")
 
-        # 🧠 Budget Logic
         if total > budget:
             st.error("Over Budget! Reduce items.")
         else:
