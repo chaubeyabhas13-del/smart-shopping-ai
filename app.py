@@ -3,17 +3,17 @@ import pandas as pd
 
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# 🎨 PREMIUM UI (FIXED VISIBILITY)
+# 🎨 CLEAN PROFESSIONAL UI (NO RED)
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: #ffffff;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background: #0b0b0b;
+    background: #0d1117;
     color: white;
 }
 
@@ -24,11 +24,6 @@ input, textarea {
     border-radius: 8px !important;
 }
 
-div[data-baseweb="input"] {
-    background-color: white !important;
-    color: black !important;
-}
-
 /* Labels */
 label {
     color: #ffffff !important;
@@ -37,8 +32,7 @@ label {
 
 /* Cards */
 .card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.12);
     padding: 15px;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -46,24 +40,28 @@ label {
 
 /* Product Cards */
 .product-card {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.15);
     padding: 15px;
     border-radius: 12px;
     text-align: center;
-    transition: 0.3s;
-}
-.product-card:hover {
-    transform: scale(1.05);
 }
 
 /* Button */
 .stButton>button {
-    background: linear-gradient(45deg, #ff6a00, #ee0979);
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
     color: white;
     border-radius: 10px;
     height: 45px;
     font-weight: bold;
     border: none;
+}
+
+/* Tabs (remove red underline) */
+button[data-baseweb="tab"] {
+    color: white !important;
+}
+button[aria-selected="true"] {
+    border-bottom: 3px solid #00c6ff !important;
 }
 
 /* Headings */
@@ -92,7 +90,7 @@ tab1, tab2, tab3, tab4 = st.tabs(
 
 products = []
 
-# ------------------ TAB 1 ------------------
+# ------------------ PRODUCT ENTRY ------------------
 with tab1:
     st.subheader("Enter Product Details")
 
@@ -124,7 +122,7 @@ with tab1:
             "image": image
         })
 
-# ------------------ TAB 2 ------------------
+# ------------------ SHOPPING VIEW ------------------
 with tab2:
     st.subheader("Shopping View")
 
@@ -146,7 +144,7 @@ with tab2:
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-# ------------------ TAB 3 ------------------
+# ------------------ CART ------------------
 with tab3:
     st.subheader("Your Cart")
 
@@ -177,11 +175,11 @@ with tab3:
         st.subheader(f"Total: ₹ {round(total,2)}")
 
         if total > budget:
-            st.error("Over Budget! Reduce items.")
+            st.error("Over Budget!")
         else:
-            st.success("Within Budget ✅")
+            st.success("Within Budget")
 
-# ------------------ TAB 4 ------------------
+# ------------------ SMART ANALYSIS ------------------
 with tab4:
     st.subheader("Smart Recommendation System")
 
@@ -191,13 +189,11 @@ with tab4:
         st.warning("Enter product details first")
     else:
         for p in valid_products:
-            p["score"] = p["value"] / p["price"] if p["price"] > 0 else 0
+            p["score"] = p["value"] / p["price"]
 
-        # 🏆 Best Product
         best = max(valid_products, key=lambda x: x["score"])
-        st.success(f"Best Value Product: {best['name']}")
+        st.success(f"Best Product: {best['name']}")
 
-        # 💰 Budget Optimization
         sorted_products = sorted(valid_products, key=lambda x: x["score"], reverse=True)
 
         selected = []
@@ -208,14 +204,10 @@ with tab4:
                 selected.append(p)
                 total += p["price"]
 
-        st.write("### Recommended Products Under Budget")
-
+        st.write("Recommended within budget:")
         for p in selected:
             st.write(f"{p['name']} - ₹{round(p['price'],2)}")
 
-        st.write(f"Total: ₹{round(total,2)}")
-
-        # 📊 Table
         df = pd.DataFrame(valid_products)
         st.dataframe(df[["name", "price", "value", "score"]])
 
