@@ -1,33 +1,57 @@
 import streamlit as st
-import pandas as pd
 
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# 🎨 UI DESIGN
+# 🎨 PREMIUM UI
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(to right, #f5f7fa, #e4ecf7);
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
 }
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: #111;
+    color: white;
+}
+
+/* Cards */
 .card {
-    background: white;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
     margin-bottom: 20px;
 }
+
+/* Product cards */
 .product-card {
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    padding: 15px;
+    border-radius: 12px;
     text-align: center;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
 }
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+/* Buttons */
 .stButton>button {
-    background: #1a237e;
+    background: linear-gradient(45deg, #ff6a00, #ee0979);
     color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     height: 45px;
+    border: none;
+}
+
+/* Inputs */
+input, textarea {
+    color: black !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -41,7 +65,7 @@ budget = st.sidebar.number_input("Enter Budget ₹", min_value=1)
 
 num_products = st.sidebar.slider("Number of Products", 1, 10, 3)
 
-# 🛒 SESSION CART
+# 🛒 CART STORAGE
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
@@ -85,7 +109,7 @@ with tab1:
 
 # ------------------ TAB 2 ------------------
 with tab2:
-    st.subheader("Shopping View (Like Amazon)")
+    st.subheader("Shopping View")
 
     cols = st.columns(3)
 
@@ -135,11 +159,12 @@ with tab3:
         st.markdown("---")
         st.subheader(f"Total: ₹ {round(total,2)}")
 
-        # 🧠 Optimization suggestion
+        # 🧠 Budget Logic
         if total > budget:
             st.error("Over Budget! Reduce items.")
         else:
             st.success("Within Budget ✅")
 
+# FOOTER
 st.markdown("---")
 st.markdown("OptiCart Pro | Advanced Smart Shopping System")
