@@ -3,7 +3,7 @@ import pandas as pd
 
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# 🎨 CLEAN PROFESSIONAL UI (NO RED)
+# 🎨 CLEAN UI
 st.markdown("""
 <style>
 .stApp {
@@ -11,26 +11,22 @@ st.markdown("""
     color: #ffffff;
 }
 
-/* Sidebar */
 section[data-testid="stSidebar"] {
     background: #0d1117;
     color: white;
 }
 
-/* Inputs */
 input, textarea {
     background-color: #ffffff !important;
     color: #000000 !important;
     border-radius: 8px !important;
 }
 
-/* Labels */
 label {
     color: #ffffff !important;
     font-weight: 500;
 }
 
-/* Cards */
 .card {
     background: rgba(255,255,255,0.12);
     padding: 15px;
@@ -38,7 +34,6 @@ label {
     margin-bottom: 20px;
 }
 
-/* Product Cards */
 .product-card {
     background: rgba(255,255,255,0.15);
     padding: 15px;
@@ -46,7 +41,6 @@ label {
     text-align: center;
 }
 
-/* Button */
 .stButton>button {
     background: linear-gradient(45deg, #00c6ff, #0072ff);
     color: white;
@@ -56,7 +50,6 @@ label {
     border: none;
 }
 
-/* Tabs (remove red underline) */
 button[data-baseweb="tab"] {
     color: white !important;
 }
@@ -64,7 +57,6 @@ button[aria-selected="true"] {
     border-bottom: 3px solid #00c6ff !important;
 }
 
-/* Headings */
 h1, h2, h3 {
     color: white !important;
 }
@@ -94,23 +86,45 @@ products = []
 with tab1:
     st.subheader("Enter Product Details")
 
+    default_products = [
+        {"name": "iPhone 15", "price": 79999, "value": 4.8, "discount": 10,
+         "image": "https://m.media-amazon.com/images/I/71d7rfSl0wL._SX679_.jpg"},
+        {"name": "Nike Shoes", "price": 4999, "value": 4.5, "discount": 20,
+         "image": "https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/air-max.jpg"},
+        {"name": "Laptop", "price": 65000, "value": 4.6, "discount": 15,
+         "image": "https://m.media-amazon.com/images/I/71vFKBpKakL._SX679_.jpg"},
+        {"name": "Headphones", "price": 2999, "value": 4.3, "discount": 25,
+         "image": "https://m.media-amazon.com/images/I/61CGHv6kmWL._SX679_.jpg"},
+        {"name": "Smart Watch", "price": 6999, "value": 4.4, "discount": 18,
+         "image": "https://m.media-amazon.com/images/I/61y2VVWcGBL._SX679_.jpg"},
+    ]
+
     for i in range(num_products):
         st.markdown("<div class='card'>", unsafe_allow_html=True)
+
+        default = default_products[i] if i < len(default_products) else {
+            "name": f"Product {i+1}",
+            "price": 1000,
+            "value": 4.0,
+            "discount": 10,
+            "image": ""
+        }
 
         col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
-            name = st.text_input(f"Product {i+1}", key=f"name{i}")
+            name = st.text_input(f"Product {i+1}", value=default["name"], key=f"name{i}")
         with col2:
-            price = st.number_input(f"Price ₹{i+1}", key=f"price{i}")
+            price = st.number_input(f"Price ₹{i+1}", value=default["price"], key=f"price{i}")
         with col3:
-            value = st.number_input(f"Rating {i+1}", key=f"value{i}")
+            value = st.number_input(f"Rating {i+1}", value=default["value"], key=f"value{i}")
         with col4:
-            discount = st.slider(f"Discount %", 0, 50, key=f"disc{i}")
+            discount = st.slider(f"Discount %", 0, 50, default["discount"], key=f"disc{i}")
         with col5:
-            image = st.text_input("Image URL", key=f"img{i}")
+            image = st.text_input("Image URL", value=default["image"], key=f"img{i}")
 
         final_price = price - (price * discount / 100)
+
         st.write(f"Final Price: ₹ {round(final_price,2)}")
 
         st.markdown("</div>", unsafe_allow_html=True)
