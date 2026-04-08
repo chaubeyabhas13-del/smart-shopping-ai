@@ -70,7 +70,8 @@ with tabs[0]:
 
         st.write(f"Final Price: ₹ {round(final_price, 2)}")
 
-        if name.strip() != "":
+        # ONLY VALID PRODUCTS
+        if name.strip() != "" and price > 0:
             products.append({
                 "name": name,
                 "price": price,
@@ -140,13 +141,22 @@ with tabs[3]:
     if not st.session_state.products:
         st.warning("Add products first!")
     else:
-        best = max(
-            st.session_state.products,
-            key=lambda x: x["rating"] / (x["final_price"] + 1)
-        )
+        # FILTER VALID PRODUCTS
+        valid_products = [
+            p for p in st.session_state.products
+            if "rating" in p and "final_price" in p
+        ]
 
-        st.success(f"Best Value Product: {best['name']}")
+        if not valid_products:
+            st.error("No valid products available!")
+        else:
+            best = max(
+                valid_products,
+                key=lambda x: x.get("rating", 0) / (x.get("final_price", 1) + 1)
+            )
 
-        st.write("Why?")
-        st.write("✔ High Rating")
-        st.write("✔ Lower Effective Price")
+            st.success(f"Best Value Product: {best['name']}")
+
+            st.write("Reason:")
+            st.write("✔ High rating compared to price")
+            st.write("✔ Best value for money")
