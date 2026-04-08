@@ -3,78 +3,75 @@ import streamlit as st
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# ---------------- NEW PREMIUM UI ----------------
+# ---------------- UPDATED CLEAN UI ----------------
 st.markdown("""
 <style>
 
-/* 🌌 Full App Background */
+/* 🌟 LIGHT BACKGROUND */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
 }
 
-/* 📦 Sidebar */
+/* 📦 SIDEBAR */
 [data-testid="stSidebar"] {
-    background-color: #0b1a2f;
+    background-color: #0d1b2a;
     color: white;
 }
 
-/* ✨ Titles */
+/* ✨ TITLES */
 h1 {
-    color: #ffffff;
+    color: #0d47a1;
     font-weight: 700;
 }
 
 h2, h3 {
-    color: #e3f2fd;
+    color: #1565c0;
 }
 
-/* 🧾 Cards */
+/* 🧾 CARDS */
 .card {
     background: white;
-    color: #1a1a1a;
+    color: black;
     padding: 18px;
-    border-radius: 14px;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
-    transition: transform 0.2s ease;
+    border-radius: 12px;
+    box-shadow: 0px 5px 12px rgba(0,0,0,0.15);
 }
 
-.card:hover {
-    transform: scale(1.03);
-}
-
-/* 🔘 Buttons */
+/* 🔘 BUTTONS */
 button[kind="primary"] {
-    background: linear-gradient(135deg, #2196f3, #21cbf3);
-    color: white;
+    background-color: #1976d2 !important;
+    color: white !important;
     border-radius: 8px;
     font-weight: 600;
 }
 
-/* 💡 Inputs */
+/* 💡 INPUTS */
 input, .stNumberInput, .stTextInput {
-    background-color: #f5f7fa !important;
+    background-color: #ffffff !important;
     border-radius: 8px !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
 }
 
-/* 📊 Tabs */
+/* 🎚 SLIDERS */
+.stSlider > div > div {
+    color: black !important;
+}
+
+/* 📊 TABS */
 button[data-baseweb="tab"] {
     font-weight: 600;
-    color: #bbdefb;
+    color: #1565c0;
 }
 
 button[aria-selected="true"] {
-    color: #ffffff !important;
-    border-bottom: 3px solid #4fc3f7;
+    color: #0d47a1 !important;
+    border-bottom: 3px solid #1976d2;
 }
 
-/* 📦 Alerts */
+/* 📦 ALERT */
 .stAlert {
     border-radius: 10px;
-}
-
-/* 🔥 Spacing */
-.block-container {
-    padding-top: 2rem;
 }
 
 </style>
