@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 
+# ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
 # ---------- PREMIUM UI ----------
@@ -22,10 +23,10 @@ h1, h2, h3 {
 .card {
     background: white;
     color: black;
-    padding: 15px;
+    padding: 20px;
     border-radius: 15px;
     margin: 10px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
     text-align: center;
 }
 
@@ -47,15 +48,6 @@ num_products = st.sidebar.slider("Number of Products", 1, 5, 3)
 
 # ---------- TITLE ----------
 st.title("OptiCart Pro – Smart Shopping Optimization System")
-
-# ---------- DEFAULT IMAGES ----------
-default_images = [
-    "https://m.media-amazon.com/images/I/71d7rfSl0wL._SX679_.jpg",
-    "https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/air-max.jpg",
-    "https://m.media-amazon.com/images/I/71vFKBpKakL._SX679_.jpg",
-    "https://m.media-amazon.com/images/I/81Zt42ioCgL._SX679_.jpg",
-    "https://m.media-amazon.com/images/I/61bK6PMOC3L._SX679_.jpg"
-]
 
 # ---------- SESSION ----------
 if "products" not in st.session_state:
@@ -92,8 +84,7 @@ with tab1:
         products.append({
             "name": name,
             "price": final_price,
-            "rating": rating,
-            "image": default_images[i]
+            "rating": rating
         })
 
     if st.button("Save Products"):
@@ -110,11 +101,9 @@ with tab2:
         with cols[idx % 3]:
             st.markdown('<div class="card">', unsafe_allow_html=True)
 
-            st.image(product["image"], height=150)
-
-            st.subheader(product["name"])
-            st.write(f"Price: ₹ {product['price']}")
-            st.write(f"Rating: {product['rating']} ⭐")
+            st.subheader(product.get("name", "No Name"))
+            st.write(f"Price: ₹ {round(product.get('price', 0), 2)}")
+            st.write(f"Rating: {product.get('rating', 0)} ⭐")
 
             if st.button(f"Add to Cart {idx}"):
                 st.session_state.cart.append(product)
