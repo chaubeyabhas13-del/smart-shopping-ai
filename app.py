@@ -3,32 +3,80 @@ import streamlit as st
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="OptiCart Pro", layout="wide")
 
-# ---------------- STYLING ----------------
+# ---------------- NEW PREMIUM UI ----------------
 st.markdown("""
 <style>
-body {
-    background-color: #0b1a2f;
+
+/* 🌌 Full App Background */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
 }
 
-.main {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+/* 📦 Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #0b1a2f;
     color: white;
-    padding: 20px;
+}
+
+/* ✨ Titles */
+h1 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+h2, h3 {
+    color: #e3f2fd;
+}
+
+/* 🧾 Cards */
+.card {
+    background: white;
+    color: #1a1a1a;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+/* 🔘 Buttons */
+button[kind="primary"] {
+    background: linear-gradient(135deg, #2196f3, #21cbf3);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* 💡 Inputs */
+input, .stNumberInput, .stTextInput {
+    background-color: #f5f7fa !important;
+    border-radius: 8px !important;
+}
+
+/* 📊 Tabs */
+button[data-baseweb="tab"] {
+    font-weight: 600;
+    color: #bbdefb;
+}
+
+button[aria-selected="true"] {
+    color: #ffffff !important;
+    border-bottom: 3px solid #4fc3f7;
+}
+
+/* 📦 Alerts */
+.stAlert {
     border-radius: 10px;
 }
 
-.card {
-    background: white;
-    color: black;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0px 6px 15px rgba(0,0,0,0.25);
-    margin-bottom: 15px;
+/* 🔥 Spacing */
+.block-container {
+    padding-top: 2rem;
 }
 
-h1, h2, h3 {
-    color: white;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -65,12 +113,10 @@ with tabs[0]:
         rating = col3.slider(f"Rating {i}", 1.0, 5.0, 4.0, key=f"rating_{i}")
         discount = col4.slider(f"Discount % {i}", 0, 50, 10, key=f"discount_{i}")
 
-        # SAFE CALCULATION
         final_price = price * (1 - discount / 100)
 
         st.write(f"Final Price: ₹ {round(final_price, 2)}")
 
-        # ONLY VALID PRODUCTS
         if name.strip() != "" and price > 0:
             products.append({
                 "name": name,
@@ -141,7 +187,6 @@ with tabs[3]:
     if not st.session_state.products:
         st.warning("Add products first!")
     else:
-        # FILTER VALID PRODUCTS
         valid_products = [
             p for p in st.session_state.products
             if "rating" in p and "final_price" in p
@@ -157,6 +202,5 @@ with tabs[3]:
 
             st.success(f"Best Value Product: {best['name']}")
 
-            st.write("Reason:")
             st.write("✔ High rating compared to price")
             st.write("✔ Best value for money")
