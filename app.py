@@ -21,19 +21,18 @@ body {
     background: white;
     color: black;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.25);
     margin-bottom: 15px;
 }
 
-button[kind="primary"] {
-    background-color: #1e88e5;
+h1, h2, h3 {
     color: white;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- SESSION STATE ----------------
+# ---------------- SESSION ----------------
 if "products" not in st.session_state:
     st.session_state.products = []
 
@@ -42,15 +41,13 @@ if "cart" not in st.session_state:
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.title("Budget Settings")
-
 budget = st.sidebar.number_input("Enter Budget ₹", value=10000)
-
 num_products = st.sidebar.slider("Number of Products", 1, 10, 3)
 
 # ---------------- TITLE ----------------
 st.markdown("<h1 style='text-align:center;'>OptiCart Pro – Smart Shopping Optimization System</h1>", unsafe_allow_html=True)
 
-tabs = st.tabs(["Product Entry", "Shopping View", "Cart"])
+tabs = st.tabs(["Product Entry", "Shopping View", "Cart", "Smart Analysis"])
 
 # ================= PRODUCT ENTRY =================
 with tabs[0]:
@@ -68,11 +65,12 @@ with tabs[0]:
         rating = col3.slider(f"Rating {i}", 1.0, 5.0, 4.0, key=f"rating_{i}")
         discount = col4.slider(f"Discount % {i}", 0, 50, 10, key=f"discount_{i}")
 
+        # SAFE CALCULATION
         final_price = price * (1 - discount / 100)
 
         st.write(f"Final Price: ₹ {round(final_price, 2)}")
 
-        if name:
+        if name.strip() != "":
             products.append({
                 "name": name,
                 "price": price,
@@ -98,19 +96,16 @@ with tabs[1]:
             with cols[i % 3]:
                 st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-                st.subheader(product["name"])
-                st.write(f"Price: ₹ {round(product['final_price'], 2)}")
-                st.write(f"Rating: ⭐ {product['rating']}")
+                st.subheader(product.get("name", "No Name"))
+                st.write(f"Price: ₹ {round(product.get('final_price', 0), 2)}")
+                st.write(f"Rating: ⭐ {product.get('rating', 0)}")
 
-                # ADD TO CART (FIXED)
                 if st.button(f"Add {product['name']} to Cart", key=f"cart_{i}"):
-
-                    # prevent duplicate
                     if product not in st.session_state.cart:
                         st.session_state.cart.append(product)
-                        st.success(f"{product['name']} added to cart!")
+                        st.success("Added!")
                     else:
-                        st.warning("Already in cart!")
+                        st.warning("Already in cart")
 
                 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -124,8 +119,9 @@ with tabs[2]:
         total = 0
 
         for item in st.session_state.cart:
-            st.write(f"{item['name']} - ₹ {round(item['final_price'], 2)}")
-            total += item["final_price"]
+            price = item.get("final_price", 0)
+            st.write(f"{item.get('name')} - ₹ {round(price, 2)}")
+            total += price
 
         st.markdown(f"### Total: ₹ {round(total, 2)}")
 
@@ -134,7 +130,23 @@ with tabs[2]:
         else:
             st.success("Within Budget")
 
-        # CLEAR CART BUTTON
         if st.button("Clear Cart"):
             st.session_state.cart = []
-            st.success("Cart cleared!")
+
+# ================= SMART ANALYSIS =================
+with tabs[3]:
+    st.subheader("Smart Analysis")
+
+    if not st.session_state.products:
+        st.warning("Add products first!")
+    else:
+        best = max(
+            st.session_state.products,
+            key=lambda x: x["rating"] / (x["final_price"] + 1)
+        )
+
+        st.success(f"Best Value Product: {best['name']}")
+
+        st.write("Why?")
+        st.write("✔ High Rating")
+        st.write("✔ Lower Effective Price")
