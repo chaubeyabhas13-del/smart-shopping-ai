@@ -63,7 +63,7 @@ tab1, tab2, tab3, tab4 = st.tabs(
 
 # ---------- PRODUCT ENTRY ----------
 with tab1:
-    st.header("Enter Product Details")
+    st.header("Enter Your Own Product Details")
 
     products = []
 
@@ -72,9 +72,9 @@ with tab1:
 
         col1, col2, col3, col4 = st.columns(4)
 
-        name = col1.text_input("Name", key=f"name{i}")
-        price = col2.number_input("Price", key=f"price{i}", value=0)
-        rating = col3.number_input("Rating", 0.0, 5.0, key=f"rating{i}")
+        name = col1.text_input("Product Name", key=f"name{i}")
+        price = col2.number_input("Price ₹", key=f"price{i}", value=0)
+        rating = col3.number_input("Rating (0-5)", 0.0, 5.0, key=f"rating{i}")
         discount = col4.slider("Discount %", 0, 50, key=f"discount{i}")
 
         final_price = round(price * (1 - discount / 100), 2)
@@ -89,7 +89,7 @@ with tab1:
 
     if st.button("Save Products"):
         st.session_state.products = products
-        st.success("Products Saved Successfully!")
+        st.success("Products saved successfully!")
 
 # ---------- SHOPPING VIEW ----------
 with tab2:
@@ -102,17 +102,20 @@ with tab2:
             st.markdown('<div class="card">', unsafe_allow_html=True)
 
             st.subheader(product.get("name", "No Name"))
+
             st.write(f"Price: ₹ {round(product.get('price', 0), 2)}")
             st.write(f"Rating: {product.get('rating', 0)} ⭐")
 
-            if st.button(f"Add to Cart {idx}"):
+            # CLEAN BUTTON (NO NUMBER)
+            if st.button("Add to Cart", key=f"cart{idx}"):
                 st.session_state.cart.append(product)
+                st.success(f"{product['name']} added to cart")
 
             st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- CART ----------
 with tab3:
-    st.header("Cart")
+    st.header("Your Cart")
 
     total = 0
 
